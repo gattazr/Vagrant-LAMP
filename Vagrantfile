@@ -27,4 +27,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		vb.name = "Vagrant-"+ project_name
 	end
 
+	config.vm.provision :chef_solo do |chef|
+      chef.add_recipe "app::web_server"
+  end
+
 end
