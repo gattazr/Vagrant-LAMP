@@ -3,7 +3,7 @@
 
 # General configuration
 #######################
-ip_adress = '33.33.33.10'
+ip_address = '33.33.33.10'
 project_name = 'myAwesomeProject'
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
@@ -19,13 +19,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
 	config.omnibus.chef_version = :latest
-	config.vm.network :private_network, ip: "33.33.33.10"
+	config.vm.network :private_network, ip: ip_address
 	config.vm.boot_timeout = 120
 	config.berkshelf.enabled = true
 
 	config.vm.provider :virtualbox do |vb|
 		vb.name = "Vagrant-"+ project_name
 	end
+
+	config.hostmanager.enabled = true
+	config.hostmanager.manage_host = true
+	config.vm.define project_name do |node|
+		node.vm.hostname = project_name + ".dev"
+		node.vm.network :private_network, ip: ip_address
+		node.hostmanager.aliases = [ "www." + project_name + ".dev" ]
+	end
+	config.vm.provision :hostmanager
 
 	config.vm.provision :chef_solo do |chef|
       chef.add_recipe "app::web_server"
