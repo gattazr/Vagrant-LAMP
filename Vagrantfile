@@ -5,6 +5,7 @@
 #######################
 ip_address = '33.33.33.10'
 project_name = 'myAwesomeProject'
+src_path = '/var/www/public/'
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
@@ -36,8 +37,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 	config.vm.provision :hostmanager
 
+	config.vm.synced_folder "./public/" , src_path, :mount_options => ["dmode=777", "fmode=666"]
+
 	config.vm.provision :chef_solo do |chef|
-      chef.add_recipe "app::web_server"
+	chef.add_recipe "app::web_server"
+
+	chef.json = {
+		:app => {
+			:name => project_name,
+			:src_path => src_path,
+
+			:server_name    => project_name + ".dev",
+			:server_aliases =>  [ "www." + project_name + ".dev" ]
+		}
+	}
   end
 
 end
