@@ -6,28 +6,33 @@
 ip_address = '33.33.33.10'
 project_name = 'myAwesomeProject'
 src_path = '/var/www/public/'
+database_password = 'root'
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	# All Vagrant configuration is done here. The most common configuration
-	# options are documented and commented below. For a complete reference,
-	# please see the online documentation at vagrantup.com.
+	# All Vagrant configuration is done here.
 
-	# Every Vagrant virtual environment requires a box to build off of.
+	# Enable Berkshelf support
+	config.berkshelf.enabled = true
+
+	# Define the VM box to use.
 	config.vm.box = "precise32"
 	config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
+	# make sure omnibus is up to date
 	config.omnibus.chef_version = :latest
-	config.vm.network :private_network, ip: ip_address
-	config.vm.boot_timeout = 120
-	config.berkshelf.enabled = true
 
+	# set virtualbox configuration
 	config.vm.provider :virtualbox do |vb|
 		vb.name = "Vagrant-"+ project_name
 	end
+	config.vm.boot_timeout = 120
 
+
+	# Manage the adress and hostname of the VM
+	config.vm.network :private_network, ip: ip_address
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
 	config.vm.define project_name do |node|
@@ -37,20 +42,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 	config.vm.provision :hostmanager
 
+	# set the shared folder
 	config.vm.synced_folder "./public/" , src_path, :mount_options => ["dmode=777", "fmode=666"]
 
+	# update the apt repository
+	config.vm.provision :shell, :inline => "apt-get update -qq"
+	
+	# Enable and configure chef solo
 	config.vm.provision :chef_solo do |chef|
-	chef.add_recipe "app::web_server"
+		chef.add_recipe "app::web_server"
+		chef.add_recipe "app::database"
 
-	chef.json = {
-		:app => {
-			:name => project_name,
-			:src_path => src_path,
+		chef.json = {
+			:app => {
+				:name => project_name,
+				:src_path => src_path,
 
-			:server_name    => project_name + ".dev",
-			:server_aliases =>  [ "www." + project_name + ".dev" ]
+				:server_name    => project_name + ".dev",
+				:server_aliases =>  [ "www." + project_name + ".dev" ]
+			},
+			:mysql => {
+				:server_root_password   => database_password,
+				:server_repl_password   => database_password,
+				:server_debian_password => database_password,
+				:bind_address           => ip_address,
+				:allow_remote_root      => true
+			}
 		}
-	}
-  end
+	end
 
 end
