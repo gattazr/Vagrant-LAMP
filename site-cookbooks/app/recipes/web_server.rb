@@ -7,6 +7,11 @@
 
 # Install Apache
 include_recipe "apache2"
+include_recipe "apache2::mod_php5"
+
+# Install php
+include_recipe "dotdeb"
+include_recipe "dotdeb::php54"
 
 # create apache config
 template "#{node['apache']['dir']}/sites-available/#{node['app']['name']}.conf" do

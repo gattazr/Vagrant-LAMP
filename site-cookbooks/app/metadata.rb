@@ -6,3 +6,5 @@ version           "0.1.0"
 
 depends 'apache2', '~> 1.8.0'
 depends 'mysql', '~> 4.0.0'
+depends 'dotdeb'
+depends 'apt'

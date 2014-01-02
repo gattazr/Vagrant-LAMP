@@ -7,6 +7,7 @@ Contains
 ----------
 * Apache 2
 * Mysql
+* Php 5.4
 
 Version
 ----
