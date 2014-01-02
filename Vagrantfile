@@ -7,6 +7,7 @@ ip_address = '33.33.33.10'
 project_name = 'myAwesomeProject'
 src_path = '/var/www/public/'
 database_password = 'root'
+php_packages = %w{ php5-mysqlnd php5-xdebug }
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
@@ -59,7 +60,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				:src_path => src_path,
 
 				:server_name    => project_name + ".dev",
-				:server_aliases =>  [ "www." + project_name + ".dev" ]
+				:server_aliases =>  [ "www." + project_name + ".dev" ],
+				:server_address => ip_address,
+
+				:php_packages => php_packages
 			},
 			:mysql => {
 				:server_root_password   => database_password,
