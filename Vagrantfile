@@ -6,7 +6,11 @@
 ip_address = '33.33.33.10'
 project_name = 'myAwesomeProject'
 src_path = '/var/www/public/'
-database_password = 'root'
+mysql_password = 'root'
+database_name = 'database_name'
+database_user = 'database_user'
+database_password = 'database_password'
+
 php_packages = %w{ php5-mysqlnd php5-xdebug }
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
@@ -63,14 +67,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				:server_aliases =>  [ "www." + project_name + ".dev" ],
 				:server_address => ip_address,
 
+				:database_name => database_name,
+				:database_user => database_user,
+				:database_password => database_password,
+
 				:php_packages => php_packages
 			},
 			:mysql => {
-				:server_root_password   => database_password,
-				:server_repl_password   => database_password,
-				:server_debian_password => database_password,
-				:bind_address           => ip_address,
-				:allow_remote_root      => true
+				:host => 'localhost',
+				:server_root_password 	=> mysql_password,
+				:server_repl_password 	=> mysql_password,
+				:server_debian_password	=> mysql_password,
+				:bind_address 			=> ip_address,
+				:allow_remote_root 		=> true
 			}
 		}
 	end
