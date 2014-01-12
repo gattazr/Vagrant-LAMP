@@ -27,3 +27,12 @@ mysql_database_user node['app']['database_user'] do
 	privileges		[:all]
 	action			[:create, :grant]
 end
+
+if File.file?("#{node['app']['database_dump']}")
+	ruby_block "seed #{node['app']['name']} database" do
+	block do
+		%x[mysql -u #{node['app']['database_user']} -p#{node['app']['database_password']} #{node['app']['database_name']} < #{node['app']['database_dump']}]
+	end
+	action :create
+	end
+end
