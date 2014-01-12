@@ -3,13 +3,8 @@
 
 # General configuration
 #######################
-ip_address = '33.33.33.10'
-project_name = 'myAwesomeProject'
-src_path = '/var/www/public/'
-mysql_password = 'root'
-database_name = 'database_name'
-database_user = 'database_user'
-database_password = 'database_password'
+require './config/general.rb'
+require './config/database.rb'
 
 php_packages = %w{ php5-mysqlnd php5-xdebug }
 
@@ -31,24 +26,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	# set virtualbox configuration
 	config.vm.provider :virtualbox do |vb|
-		vb.name = "Vagrant-"+ project_name
+		vb.name = "Vagrant-"+ App::Project_name
 	end
 	config.vm.boot_timeout = 120
 
 
 	# Manage the adress and hostname of the VM
-	config.vm.network :private_network, ip: ip_address
+	config.vm.network :private_network, ip: App::Ip_address
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
-	config.vm.define project_name do |node|
-		node.vm.hostname = project_name + ".dev"
-		node.vm.network :private_network, ip: ip_address
-		node.hostmanager.aliases = [ "www." + project_name + ".dev" ]
+	config.vm.define App::Project_name do |node|
+		node.vm.hostname = App::Project_name + ".dev"
+		node.vm.network :private_network, ip: App::Ip_address
+		node.hostmanager.aliases = [ "www." + App::Project_name + ".dev" ]
 	end
 	config.vm.provision :hostmanager
 
 	# set the shared folder
-	config.vm.synced_folder "./public/" , src_path, :mount_options => ["dmode=777", "fmode=666"]
+	config.vm.synced_folder "./public/" , App::Src_path, :mount_options => ["dmode=777", "fmode=666"]
 
 	# update the apt repository
 	config.vm.provision :shell, :inline => "apt-get update -qq"
@@ -60,25 +55,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 		chef.json = {
 			:app => {
-				:name => project_name,
-				:src_path => src_path,
+				:name => App::Project_name,
+				:src_path => App::Src_path,
 
-				:server_name    => project_name + ".dev",
-				:server_aliases =>  [ "www." + project_name + ".dev" ],
-				:server_address => ip_address,
+				:server_name    => App::Project_name + ".dev",
+				:server_aliases =>  [ "www." + App::Project_name + ".dev" ],
+				:server_address => App::Ip_address,
 
-				:database_name => database_name,
-				:database_user => database_user,
-				:database_password => database_password,
+				:database_name => Database::Database_name,
+				:database_user => Database::Database_user,
+				:database_password => Database::Database_password,
 
 				:php_packages => php_packages
 			},
 			:mysql => {
 				:host => 'localhost',
-				:server_root_password 	=> mysql_password,
-				:server_repl_password 	=> mysql_password,
-				:server_debian_password	=> mysql_password,
-				:bind_address 			=> ip_address,
+				:server_root_password 	=> Database::Root_password,
+				:server_repl_password 	=> Database::Root_password,
+				:server_debian_password	=> Database::Root_password,
+				:bind_address 			=> App::Ip_address,
 				:allow_remote_root 		=> true
 			}
 		}
