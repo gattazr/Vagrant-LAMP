@@ -8,6 +8,7 @@
 # Install Apache
 include_recipe "apache2"
 include_recipe "apache2::mod_php5"
+include_recipe "apache2::mod_rewrite"
 
 # Install php
 include_recipe "dotdeb"

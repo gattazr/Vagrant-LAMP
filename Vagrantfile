@@ -6,7 +6,7 @@
 require './config/general.rb'
 require './config/database.rb'
 
-php_packages = %w{ php5-mysqlnd php5-xdebug }
+php_packages = %w{ php5-mysqlnd php5-xdebug libapache2-mod-php5}
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
