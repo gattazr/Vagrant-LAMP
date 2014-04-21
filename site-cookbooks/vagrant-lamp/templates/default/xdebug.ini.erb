@@ -3,15 +3,16 @@ zend_extension=<%= %x[find /usr/lib/php5 -name 'xdebug.so' 2> /dev/null] %>
 html_errors=on
 display_errors=on
 
-xdebug.default_enable=on
-xdebug.remote_enable=on
+xdebug.default_enable=1
+xdebug.remote_enable=1
 xdebug.remote_handler=dbgp
 xdebug.remote_host=localhost
 xdebug.remote_port=9000
-xdebug.remote_autostart=on
+xdebug.remote_connect_back=1
+xdebug.remote_autostart=1
 
-xdebug.collect_vars=on
+xdebug.collect_vars=1
 xdebug.collect_params=4
-xdebug.dump_globals=on
+xdebug.dump_globals=1
 xdebug.dump.SERVER=REQUEST_URI
-xdebug.show_local_vars=on
+xdebug.show_local_vars=1

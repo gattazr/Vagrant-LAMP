@@ -30,7 +30,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 	config.vm.boot_timeout = 120
 
-
 	# Manage the adress and hostname of the VM
 	config.vm.network :private_network, ip: App::Ip_address
 	config.hostmanager.enabled = true
@@ -50,8 +49,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
 	# Enable and configure chef solo
 	config.vm.provision :chef_solo do |chef|
-		chef.add_recipe "app::web_server"
-		chef.add_recipe "app::database"
+		chef.custom_config_path = "Vagrantfile.chef"
+		# add the recipes
+		chef.add_recipe "vagrant-lamp::web_server"
+		chef.add_recipe "vagrant-lamp::database"
 
 		chef.json = {
 			:app => {
